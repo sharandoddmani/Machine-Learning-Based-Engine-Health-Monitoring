@@ -34,7 +34,8 @@ From the project directory in MATLAB:
 
 ```matlab
 run_stage2
-results = runtests('tests');
+results = [runtests('tests/testEnginePreprocessing.m'), ...
+    runtests('tests/testEnginePreprocessingUnits.m')];
 assertSuccess(results);
 ```
 
@@ -71,32 +72,75 @@ timestamps are absent from the two CSVs, so engine-level and temporal independen
 cannot be verified. Figures use Class 0 and Class 1. See
 [dataset provenance](docs/dataset_provenance.txt) for evidence.
 
+## Run Stage 3
+
+Stage 3 requires Statistics and Machine Learning Toolbox. From the project
+directory in MATLAB:
+
+```matlab
+run_stage3
+results = runtests('tests');
+assertSuccess(results);
+```
+
+The benchmark reproduces the Stage 2 stratified split (seed 42) from
+`train.csv`. It fits on 12,502 development rows and compares candidates on the
+same 3,126 validation rows. All models use the same six features and
+development-only standardization. Stage 3 reads only `train.csv`. Final
+evaluation on the publisher test split is a separate stage.
+
+| Algorithm | Candidate settings |
+| --- | --- |
+| KNN | 3, 5, 7, or 11 neighbors. Euclidean distance, equal weights, k-d tree search, class ties resolved toward the smaller code. |
+| Decision Tree | Maximum splits of 10, 30, or 100. Gini impurity and minimum leaf size of one. |
+| SVM | Linear and Gaussian (RBF) kernels. Box constraint 1, kernel scale 1, SMO solver. |
+
+All fits use empirical class priors. KNN and SVM disable internal standardization.
+Each algorithm's best configuration and the overall candidate are ranked by
+unrounded macro F1, balanced accuracy, then accuracy. An exact tie goes to the
+first listed candidate in the table order. Undefined class precision, recall,
+and F1 are set to zero. Confusion matrices use actual rows and predicted columns,
+both ordered Class 0 then Class 1.
+
+The run writes `results/reports/model_training_report.txt` with every candidate's
+metrics and setting. It generates `stage3_algorithm_comparison.png`,
+`stage3_confusion_matrices.png`, and `stage3_class_performance.png` under
+`results/figures/`. The local `data/processed/stage3_models.mat` stores all fitted
+candidates, metadata, validation results, and the preprocessing fit. The
+artifact and figures are regenerated locally.
+
+Validation results guide the choice of model and hyperparameters. They remain
+development estimates. Class meanings, engine-level independence, and
+chronological independence remain unverified. Stage 4 requires project-guide
+approval.
+
 ## Project structure
 
 ```text
 data/
   raw/             Original CSVs (local downloads)
-  processed/       Local Stage 2 MAT file
+  processed/       Local Stage 2 data and Stage 3 models
 src/
   preprocessing/   Schema, splitting, standardization, and EDA
-  models/          Reserved for classifiers
-  evaluation/      Reserved for model evaluation
+  models/          KNN, Decision Tree, and SVM
+  evaluation/      Validation metrics, ranking, and plots
   prediction/      Reserved for inference
 dashboard/         Reserved for the MATLAB dashboard
 results/
-  figures/         Stage 1 and Stage 2 figures
+  figures/         Stage 1 through Stage 3 figures
   reports/         Dataset and feature reports
 docs/              Project documentation
-tests/             MATLAB preprocessing tests
+tests/             MATLAB preprocessing and model tests
 .gitignore
 README.md
 run_stage1.m
 run_stage2.m
+run_stage3.m
 ```
 
 ## Development stages
 
 1. **Complete** — Verify the dataset, summarize data quality, and visualize the inputs and labels.
 2. **Complete** — Prepare data, explore the training split, and document provenance.
-3. **Pending project-guide approval** — Compare KNN, Decision Tree, and SVM classifiers and visualize their performance.
-4. **Planned** — Build an interactive MATLAB dashboard for viewing predictions and results.
+3. **Implemented, execution pending** — Compare KNN, Decision Tree, and SVM on the frozen validation split.
+4. **Pending project-guide approval** — Evaluate on the held-out test split and develop the prediction dashboard.

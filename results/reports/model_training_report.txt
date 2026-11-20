@@ -1,0 +1,113 @@
+Stage 3 model training and validation
+MATLAB 25.2.0.3123386 (R2025b) Update 3
+Statistics and Machine Learning Toolbox 25.2
+Predictor order: engine_rpm, lub_oil_pressure, fuel_pressure, coolant_pressure, lub_oil_temp, coolant_temp
+Development-training: 12502 rows. Validation: 3126 rows. Seed: 42.
+All candidate fits use the Stage 2 development rows and fitted standardization.
+Selection uses validation only. The publisher test split is held out.
+Ranking: macro F1, balanced accuracy, accuracy, then first listed candidate.
+Ranking uses unrounded scores. Undefined precision, recall and F1 are zero.
+Class 0 and Class 1 have unverified physical meanings.
+
+Algorithm      Setting            Accuracy  Macro F1 Bal. acc.  Recall 0  Recall 1
+KNN            k = 3              0.615803  0.575704  0.574716  0.417316  0.732116
+KNN            k = 5              0.631158  0.587305  0.585996  0.412987  0.759006
+KNN            k = 7              0.636916  0.584855  0.584290  0.382684  0.785895
+KNN            k = 11             0.645553  0.587120  0.587375  0.364502  0.810249
+Decision Tree  max splits = 10    0.649392  0.569303  0.576082  0.295238  0.856925
+Decision Tree  max splits = 30    0.664427  0.616311  0.613813  0.419913  0.807712
+Decision Tree  max splits = 100   0.659309  0.600772  0.600255  0.374026  0.826484
+SVM            linear             0.650992  0.519561  0.552080  0.173160  0.930999
+SVM            gaussian           0.659949  0.583537  0.588217  0.313420  0.863014
+
+Best configuration by algorithm
+KNN (k = 5)
+Decision Tree (max splits = 30)
+SVM (gaussian)
+
+Overall validation selection: Decision Tree (max splits = 30)
+
+KNN (k = 3)
+Settings: {"numNeighbors":3,"distance":"euclidean","distanceWeight":"equal","searchMethod":"kdtree","standardize":false,"breakTies":"smallest","includeTies":false,"prior":"empirical"}
+Confusion matrix, actual rows and predicted columns, both ordered [0 1]
+  482   673
+  528  1443
+Class   Precision    Recall        F1
+    0    0.477228  0.417316  0.445266
+    1    0.681947  0.732116  0.706141
+
+KNN (k = 5)
+Settings: {"numNeighbors":5,"distance":"euclidean","distanceWeight":"equal","searchMethod":"kdtree","standardize":false,"breakTies":"smallest","includeTies":false,"prior":"empirical"}
+Confusion matrix, actual rows and predicted columns, both ordered [0 1]
+  477   678
+  475  1496
+Class   Precision    Recall        F1
+    0    0.501050  0.412987  0.452776
+    1    0.688132  0.759006  0.721834
+
+KNN (k = 7)
+Settings: {"numNeighbors":7,"distance":"euclidean","distanceWeight":"equal","searchMethod":"kdtree","standardize":false,"breakTies":"smallest","includeTies":false,"prior":"empirical"}
+Confusion matrix, actual rows and predicted columns, both ordered [0 1]
+  442   713
+  422  1549
+Class   Precision    Recall        F1
+    0    0.511574  0.382684  0.437841
+    1    0.684792  0.785895  0.731869
+
+KNN (k = 11)
+Settings: {"numNeighbors":11,"distance":"euclidean","distanceWeight":"equal","searchMethod":"kdtree","standardize":false,"breakTies":"smallest","includeTies":false,"prior":"empirical"}
+Confusion matrix, actual rows and predicted columns, both ordered [0 1]
+  421   734
+  374  1597
+Class   Precision    Recall        F1
+    0    0.529560  0.364502  0.431795
+    1    0.685114  0.810249  0.742445
+
+Decision Tree (max splits = 10)
+Settings: {"maxNumSplits":10,"minLeafSize":1,"splitCriterion":"gdi","prior":"empirical"}
+Confusion matrix, actual rows and predicted columns, both ordered [0 1]
+  341   814
+  282  1689
+Class   Precision    Recall        F1
+    0    0.547352  0.295238  0.383577
+    1    0.674790  0.856925  0.755029
+
+Decision Tree (max splits = 30)
+Settings: {"maxNumSplits":30,"minLeafSize":1,"splitCriterion":"gdi","prior":"empirical"}
+Confusion matrix, actual rows and predicted columns, both ordered [0 1]
+  485   670
+  379  1592
+Class   Precision    Recall        F1
+    0    0.561343  0.419913  0.480436
+    1    0.703802  0.807712  0.752185
+
+Decision Tree (max splits = 100)
+Settings: {"maxNumSplits":100,"minLeafSize":1,"splitCriterion":"gdi","prior":"empirical"}
+Confusion matrix, actual rows and predicted columns, both ordered [0 1]
+  432   723
+  342  1629
+Class   Precision    Recall        F1
+    0    0.558140  0.374026  0.447900
+    1    0.692602  0.826484  0.753643
+
+SVM (linear)
+Settings: {"kernel":"linear","boxConstraint":1,"kernelScale":1,"standardize":false,"solver":"SMO","prior":"empirical"}
+Confusion matrix, actual rows and predicted columns, both ordered [0 1]
+  200   955
+  136  1835
+Class   Precision    Recall        F1
+    0    0.595238  0.173160  0.268276
+    1    0.657706  0.930999  0.770846
+
+SVM (gaussian)
+Settings: {"kernel":"gaussian","boxConstraint":1,"kernelScale":1,"standardize":false,"solver":"SMO","prior":"empirical"}
+Confusion matrix, actual rows and predicted columns, both ordered [0 1]
+  362   793
+  270  1701
+Class   Precision    Recall        F1
+    0    0.572785  0.313420  0.405148
+    1    0.682037  0.863014  0.761926
+
+Validation is used for tuning and selection. These scores are development estimates.
+Engine IDs and timestamps are unavailable in the project data. Group and temporal
+independence are unverified. Final held-out evaluation awaits project-guide review.
