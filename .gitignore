@@ -30,3 +30,6 @@ secrets.json
 !/data/processed/.gitkeep
 *.mat
 *.onnx
+
+# Regenerable Stage 2 figures
+/results/figures/stage2_*.png

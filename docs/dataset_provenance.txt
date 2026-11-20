@@ -1,0 +1,25 @@
+Dataset provenance and limitations
+
+Publisher card: https://huggingface.co/datasets/mukherjee78/predictive-maintenance-engine-data
+Publisher file listing: https://huggingface.co/datasets/mukherjee78/predictive-maintenance-engine-data/tree/main
+
+The publisher describes engine sensor time-series data and lists raw_data.csv,
+train.csv and test.csv. The two project CSVs contain six sensors and the target.
+Neither project CSV contains engine IDs or timestamps. Availability of those
+fields in acquisition records is unknown. The publisher card provides no
+acquisition or simulation protocol and no code identifying the split method.
+Real versus simulated measurements and random versus time- or engine-based
+publisher splitting remain unverified. The speed header identifies RPM.
+The publisher provides no verified units for pressures or temperatures.
+
+The publisher names the target but gives no mapping from codes to operational
+states. A separate upload labels Class 1 Maintenance Required, while a thesis
+describes Class 1 as healthy for a similarly described dataset. These are
+unverified leads for this publisher's files. Use Class 0 and Class 1.
+https://huggingface.co/datasets/manjuprasads/predictive-maintenance-engine-data
+https://www.vzu.uni-wuppertal.de/fileadmin/site/vzu/Masterarbeit_HosseinNafar.pdf
+
+The project split stratifies individual rows. Engine-level independence and
+chronological separation cannot be verified. Benchmark conclusions apply to
+these records and their numeric labels. Fleet generalization and physical
+maintenance rules require additional evidence.

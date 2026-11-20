@@ -1,0 +1,59 @@
+Stage 2 preprocessing report (MATLAB 2025b)
+
+Input order: engine_rpm, lub_oil_pressure, fuel_pressure, coolant_pressure, lub_oil_temp, coolant_temp
+Target: engine_condition (Class 0 and Class 1)
+Each source record has six numeric sensors and one numeric target.
+
+Split                     Rows            Class 0            Class 1
+Publisher training       15628     5774 ( 36.95%)     9854 ( 63.05%)
+Development-training     12502     4619 ( 36.95%)     7883 ( 63.05%)
+Validation                3126     1155 ( 36.95%)     1971 ( 63.05%)
+Publisher test            3907     1444 ( 36.96%)     2463 ( 63.04%)
+
+Both CSVs passed schema and finite-value checks. Zero missing or nonfinite values.
+Missing or nonfinite values cause an error. No rows are imputed or removed.
+Potential outlier counts and sensor comparisons are in feature_analysis.txt.
+Stratification uses MT19937 seed 42 and rounds the 20% holdout count per class.
+Validation workflow: fit on development-training sensors only.
+Subtract the fitted mean and divide by the sample standard deviation (N-1).
+Use a divisor of 1 for zero standard deviations. Use the same fit for validation.
+Final workflow after model choices: refit on all publisher training rows, then
+apply that fit to the original test sensors for final evaluation.
+Stage 2 checks the test transform for finiteness and shape. Test features and labels
+are excluded from the fit, split selection, feature analysis and saved MAT file.
+Exploration covers the full publisher training split and retains all six sensors.
+Stage 3 benchmark is pending project-guide approval.
+
+Feature                      Fitted mean  Fitted sample SD           Divisor
+engine_rpm                   794.1101424       269.7049903       269.7049903
+lub_oil_pressure             3.312171479        1.02210648        1.02210648
+fuel_pressure                6.652820519       2.763040425       2.763040425
+coolant_pressure             2.332820321        1.03803909        1.03803909
+lub_oil_temp                 77.65398704       3.125358663       3.125358663
+coolant_temp                 78.45279095        6.22947039        6.22947039
+
+Dataset provenance and limitations
+
+Publisher card: https://huggingface.co/datasets/mukherjee78/predictive-maintenance-engine-data
+Publisher file listing: https://huggingface.co/datasets/mukherjee78/predictive-maintenance-engine-data/tree/main
+
+The publisher describes engine sensor time-series data and lists raw_data.csv,
+train.csv and test.csv. The two project CSVs contain six sensors and the target.
+Neither project CSV contains engine IDs or timestamps. Availability of those
+fields in acquisition records is unknown. The publisher card provides no
+acquisition or simulation protocol and no code identifying the split method.
+Real versus simulated measurements and random versus time- or engine-based
+publisher splitting remain unverified. The speed header identifies RPM.
+The publisher provides no verified units for pressures or temperatures.
+
+The publisher names the target but gives no mapping from codes to operational
+states. A separate upload labels Class 1 Maintenance Required, while a thesis
+describes Class 1 as healthy for a similarly described dataset. These are
+unverified leads for this publisher's files. Use Class 0 and Class 1.
+https://huggingface.co/datasets/manjuprasads/predictive-maintenance-engine-data
+https://www.vzu.uni-wuppertal.de/fileadmin/site/vzu/Masterarbeit_HosseinNafar.pdf
+
+The project split stratifies individual rows. Engine-level independence and
+chronological separation cannot be verified. Benchmark conclusions apply to
+these records and their numeric labels. Fleet generalization and physical
+maintenance rules require additional evidence.

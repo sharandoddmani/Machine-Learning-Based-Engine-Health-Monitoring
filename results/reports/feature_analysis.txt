@@ -1,0 +1,55 @@
+Stage 2 feature analysis, original publisher training (15628 rows)
+
+All training records (n = 15628)
+Sensor                          Min          Max         Mean       Median    Sample SD    IQR flags
+engine_rpm                       61         2239      792.262          748      267.343          371
+lub_oil_pressure         0.00338411      7.26557      3.30751      3.16459      1.02496           52
+fuel_pressure            0.00318713      21.1383      6.65198      6.19423      2.76186          908
+coolant_pressure         0.00248273       7.4785      2.34104      2.17316      1.04075          641
+lub_oil_temp                 71.322      89.5808      77.6503      76.8167      3.12191         2107
+coolant_temp                 62.446      195.528      78.4328       78.341      6.22044            2
+
+Class 0 (n = 5774)
+Sensor                          Min          Max         Mean       Median    Sample SD    IQR flags
+engine_rpm                      351         2239      885.735          845      271.581          111
+lub_oil_pressure          0.0136057      6.57546      3.23084      3.07597      1.01677            9
+fuel_pressure            0.00318713      19.8589      6.22578      5.81772       2.6717          327
+coolant_pressure         0.00248273      7.16841      2.36669      2.17309      1.08782          254
+lub_oil_temp                72.2446      89.5808      78.0303      77.0945      3.24061          880
+coolant_temp                 62.446      118.372      78.8131      78.7657       5.9681            1
+
+Class 1 (n = 9854)
+Sensor                          Min          Max         Mean       Median    Sample SD    IQR flags
+engine_rpm                       61         2136       737.49          692       249.04          289
+lub_oil_pressure         0.00338411      7.26557      3.35244      3.21428      1.02713           40
+fuel_pressure               0.17352      21.1383      6.90171       6.4239      2.78332          604
+coolant_pressure          0.0156652       7.4785      2.32601      2.17343      1.01191          376
+lub_oil_temp                 71.322      89.2863      77.4277       76.662      3.02831         1241
+coolant_temp                63.0561      195.528      78.2099      78.0895      6.35338            1
+
+Pairwise Pearson sensor correlations in input order
+Input order: engine_rpm, lub_oil_pressure, fuel_pressure, coolant_pressure, lub_oil_temp, coolant_temp
+engine_rpm               1.0000   0.0215  -0.0030  -0.0233   0.0558   0.0310
+lub_oil_pressure         0.0215   1.0000   0.0355  -0.0025  -0.0047  -0.0647
+fuel_pressure           -0.0030   0.0355   1.0000   0.0382  -0.0264  -0.0425
+coolant_pressure        -0.0233  -0.0025   0.0382   1.0000  -0.0243   0.0283
+lub_oil_temp             0.0558  -0.0047  -0.0264  -0.0243   1.0000   0.0716
+coolant_temp             0.0310  -0.0647  -0.0425   0.0283   0.0716   1.0000
+
+Pearson association with the 0/1 target (point-biserial correlation)
+engine_rpm              -0.2676
+lub_oil_pressure         0.0573
+fuel_pressure            0.1181
+coolant_pressure        -0.0189
+lub_oil_temp            -0.0932
+coolant_temp            -0.0468
+
+Largest absolute sensor pair correlation: lub_oil_temp and coolant_temp (r = 0.0716).
+Largest absolute linear target association: engine_rpm (r = -0.2676).
+Constant features: 0. 
+Sensor pairs with absolute Pearson r >= 0.95: 0.
+This threshold screens for strong linear redundancy only. All six sensors are retained.
+Compare within-sensor class summaries using the same scale. Units are unverified.
+Potential outliers are observations beyond the 1.5 IQR fences. Flags are descriptive.
+Correlations do not establish causation or physical fault types.
+See preprocessing_report.txt for split, provenance and dataset limitations.
