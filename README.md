@@ -173,7 +173,7 @@ Numeric input uses this order:
 5. `lub_oil_temp`
 6. `coolant_temp`
 
-The same functions can be called from a script or a future dashboard:
+The same functions can be called from a script or the dashboard:
 
 ```matlab
 addpath(fullfile('src','inference'), fullfile('src','preprocessing'));
@@ -196,9 +196,49 @@ The result contains `predictedClass`, `featureNames`, `rawReadings`,
 Scores are uncalibrated model outputs. The publisher's labels have unverified
 physical meanings, so the result uses Class 0 and Class 1.
 
-The dashboard can load the bundle once and call `predictEngineCondition` from
-its input handler. The inference functions have no command-window or graphics
-dependencies. Stage 6 requires project-guide approval.
+The inference functions have no command-window or graphics dependencies.
+
+## Run Stage 6
+
+Open MATLAB R2025b Update 3 on Windows with Statistics and Machine Learning
+Toolbox and the local `data/processed/final_engine_model.mat` artifact. From
+the project directory:
+
+```matlab
+run_stage6
+```
+
+Enter the six readings in order (`engine_rpm`, `lub_oil_pressure`,
+`fuel_pressure`, `coolant_pressure`, `lub_oil_temp`, `coolant_temp`) and
+select **Predict**. The dashboard shows the saved Decision Tree's predicted
+class and uncalibrated classification scores. Each sensor has a separate
+raw-value tile because the magnitudes have different scales and several units
+are unverified. Class 0 and Class 1 have unverified physical meanings.
+
+Inputs accept decimal and scientific notation. A validation error identifies the
+field and clears any previous prediction and charts. **Reset** also clears
+the inputs and restores the initial status. The dashboard loads the model once
+on launch and uses the Stage 5 inference API for each prediction. No raw data
+files are needed to run the dashboard. If MATLAB reports a missing or invalid
+model, run Stage 4 separately to generate the artifact.
+
+Run the smoke test and full suite in a MATLAB session that supports native UI
+figures:
+
+```matlab
+run_stage6_smoke
+results = runtests('tests');
+disp(results);
+assertSuccess(results);
+```
+
+For programmatic verification, `app = run_stage6("off")` returns the figure,
+six input handles, output handles, and `app.Predict()`, `app.Reset()`, and
+`app.Close()` callbacks. Set `app.Inputs(k).Value` to a numeric text value.
+The smoke test exercises the same callbacks as the visible controls.
+
+This is an academic demonstration for manually entered readings. It has no
+live sensor feed, physical fault interpretation, or calibrated probabilities.
 
 ## Project structure
 
@@ -211,12 +251,12 @@ src/
   models/          KNN, Decision Tree, and SVM
   evaluation/      Validation and held-out evaluation
   inference/       Saved-model loading and single-reading prediction
-dashboard/         Reserved for the MATLAB dashboard
+  dashboard/       Native MATLAB dashboard and callbacks
 results/
   figures/         Stage 1 through Stage 4 figures
   reports/         Dataset, training, and evaluation reports
 docs/              Project documentation
-tests/             MATLAB preprocessing and model tests
+tests/             MATLAB preprocessing, model, and dashboard tests
 .gitignore
 README.md
 run_stage1.m
@@ -225,6 +265,8 @@ run_stage3.m
 run_stage4.m
 run_stage5.m
 run_stage5_demo.m
+run_stage6.m
+run_stage6_smoke.m
 ```
 
 ## Development stages
@@ -233,5 +275,5 @@ run_stage5_demo.m
 2. **Complete** — Prepare data, explore the training split, and document provenance.
 3. **Complete** — Compare classifiers on the frozen validation split and select the Decision Tree.
 4. **Complete** — Refit the locked tree and evaluate it on the publisher test split.
-5. **Implemented, execution pending** — Predict from manually entered sensor readings.
-6. **Pending project-guide approval** — Develop the interactive dashboard.
+5. **Complete** — Predict from manually entered sensor readings.
+6. **Implemented, execution pending** — Run the interactive dashboard with the saved model.
