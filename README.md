@@ -1,6 +1,45 @@
 ﻿# Machine Learning-Based Engine Health Monitoring Using MATLAB
 
-This project investigates whether engine sensor measurements can classify engine operating conditions. **Stage 2 preprocessing and exploratory analysis are complete.** Stage 1 and Stage 2 ran successfully in MATLAB R2025b Update 3 on Windows, and all seven preprocessing tests passed.
+This academic project compares supervised classifiers on six engine sensor
+features. It includes dataset verification, preprocessing and EDA, candidate
+training, held-out evaluation, command-window prediction, and a native MATLAB
+dashboard. The approved Decision Tree has a 30-split cap and achieved held-out
+accuracy **0.659841**, macro F1 **0.596498**, and balanced accuracy **0.597122**.
+The dashboard displays numeric classes and uncalibrated scores. Physical class
+meanings and real-world reliability remain unverified.
+
+## Quick start
+
+Use MATLAB R2025b Update 3 on Windows with Statistics and Machine Learning
+Toolbox. Open the checkout as MATLAB's Current Folder. With the approved
+`data/processed/final_engine_model.mat` in place:
+
+```matlab
+run_stage5_demo
+run_stage6
+```
+
+For a fresh reproduction, download the two publisher CSVs described below
+and run these commands from normal Windows CMD. Substitute the local checkout
+path for `<project-root>`.
+
+```cmd
+cd /d "<project-root>"
+matlab -wait -batch "run_stage1; run_stage2; run_stage3; run_stage4"
+```
+
+To regenerate only the final artifact, run `run_stage4` with both CSVs in
+place. Git tracks source and reports. The original CSVs, generated MAT files,
+and regenerable Stage 2?4 figures stay local. Preserve an existing approved
+MAT file for routine demonstration and verification.
+
+## Documentation
+
+- [Reproducibility guide](docs/reproducibility_guide.md)
+- [System architecture](docs/system_architecture.md)
+- [User guide](docs/user_guide.md)
+- [Model limitations](docs/model_limitations.md)
+- [Project readiness report](results/reports/project_readiness_report.md)
 
 ## Problem and objectives
 
@@ -8,9 +47,9 @@ Engine condition is difficult to infer from a single measurement. This project w
 
 ## Tools and requirements
 
-- MATLAB R2025b on Windows. Stages 1 and 2 use base MATLAB for data preparation and graphics.
+- MATLAB R2025b Update 3 on Windows. Stages 1 and 2 use base MATLAB for data preparation and graphics. Stages 3?6 need Statistics and Machine Learning Toolbox.
 - Git for version control.
-- The two original CSV files in `data/raw/`.
+- The original CSVs in `data/raw/` for reproduction and full regression testing. The prediction tools use only the saved final artifact and source files.
 
 ## Dataset
 
@@ -20,10 +59,10 @@ The documented target is `engine_condition`. The publisher's card does not defin
 
 ## Run Stage 1
 
-In MATLAB, run the script by its full path from any working directory.
+From the project directory in MATLAB:
 
 ```matlab
-run('C:/Machine Learning-Based Engine Health Monitoring/run_stage1.m')
+run_stage1
 ```
 
 The script prints its findings and saves `results/reports/dataset_verification.txt`. It writes three PNGs under `results/figures/` when sufficient data are available. The class chart compares the splits. Histograms and Pearson correlations use training inputs only.
@@ -240,6 +279,21 @@ The smoke test exercises the same callbacks as the visible controls.
 This is an academic demonstration for manually entered readings. It has no
 live sensor feed, physical fault interpretation, or calibrated probabilities.
 
+## Run Stage 7 verification
+
+With the saved final artifact and both raw CSVs present, run from normal
+Windows CMD in the checkout root:
+
+```cmd
+matlab -wait -batch "run_stage7;"
+matlab -wait -batch "results = runtests('tests'); disp(results); assertSuccess(results)"
+```
+
+The runner verifies the saved model through the Stage 5 demo, runs the Stage 6
+dashboard smoke test, and runs the full suite. Earlier-stage regression tests
+exercise training and scoring without replacing the approved artifact or
+publishing a fresh held-out evaluation. Stage 7 verification is pending.
+
 ## Project structure
 
 ```text
@@ -267,6 +321,7 @@ run_stage5.m
 run_stage5_demo.m
 run_stage6.m
 run_stage6_smoke.m
+run_stage7.m
 ```
 
 ## Development stages
