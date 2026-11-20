@@ -135,7 +135,8 @@ Stage 4 test evaluate different model fits and partitions.
 The majority baseline predicts Class 1, the majority class in `train.csv`.
 From the publisher test counts, its accuracy is 0.630407, macro F1 is 0.386656,
 balanced accuracy is 0.500000, and Class 0 recall is zero. The final tree's
-test metrics and the comparison with this baseline await MATLAB execution.
+held-out accuracy was 0.659841, macro F1 was 0.596498, and balanced accuracy
+was 0.597122. The confusion matrix was `[515 929; 400 2063]` in [0, 1] order.
 
 Stage 4 writes `results/reports/final_model_evaluation.txt` and four PNGs
 under `results/figures/`. They cover the held-out confusion matrix, class
@@ -147,7 +148,57 @@ metrics. The run checks that the reloaded bundle produces identical predictions.
 
 The test measures an academic benchmark on the publisher's data. Class meanings,
 engine-level and chronological independence, and acquisition conditions remain
-unverified. Stage 5 requires project-guide approval.
+unverified.
+
+## Run Stage 5
+
+Manual inference requires MATLAB R2025b, Statistics and Machine Learning Toolbox,
+the project source, and the local Stage 4 artifact
+`data/processed/final_engine_model.mat`. Git excludes the MAT file. If it is
+missing, run Stage 4 separately to generate it. Stage 5 uses the saved model and
+preprocessing without opening either CSV or fitting anything.
+
+From the project directory, run `run_stage5` to enter the sensors one by one.
+Invalid entries can be retried. Type `q` at a sensor prompt to exit, or answer
+the repeat prompt after a prediction. Run `run_stage5_demo` to print an
+illustrative reading, its predicted class, and the model scores without prompts.
+The example represents no verified engine condition.
+
+Numeric input uses this order:
+
+1. `engine_rpm`
+2. `lub_oil_pressure`
+3. `fuel_pressure`
+4. `coolant_pressure`
+5. `lub_oil_temp`
+6. `coolant_temp`
+
+The same functions can be called from a script or a future dashboard:
+
+```matlab
+addpath(fullfile('src','inference'), fullfile('src','preprocessing'));
+bundle = loadFinalEngineModel(fullfile('data','processed','final_engine_model.mat'));
+reading = [800, 3.3, 6.6, 2.3, 77.6, 78.4];
+result = predictEngineCondition(bundle, reading);
+```
+
+The prediction function accepts a numeric `1-by-6` row, a scalar sensor struct,
+or a single-row sensor table. Named inputs can list the six sensors in any order.
+Every value must be a real, finite numeric scalar. Missing and extra names,
+text and cell values, and multiple readings are rejected. MATLAB table variable
+names are unique by construction. Readings are neither clamped nor screened
+against presumed physical limits.
+
+The result contains `predictedClass`, `featureNames`, `rawReadings`,
+`standardizedReadings`, `classLabels`, and `scores`. Score columns follow
+`classLabels` (Class 0 then Class 1). It also records `algorithm`,
+`hyperparameters`, `trainingRows`, `matlabVersion`, and `trainingTimestampUtc`.
+Scores are uncalibrated model outputs. The publisher's labels have unverified
+physical meanings, so the result uses Class 0 and Class 1.
+
+The dashboard can load the bundle once and call `predictEngineCondition` from
+its input handler. The inference functions have no command-window or graphics
+dependencies. Stage 6 requires project-guide approval.
 
 ## Project structure
 
@@ -159,7 +210,7 @@ src/
   preprocessing/   Schema, splitting, standardization, and EDA
   models/          KNN, Decision Tree, and SVM
   evaluation/      Validation and held-out evaluation
-  prediction/      Reserved for inference
+  inference/       Saved-model loading and single-reading prediction
 dashboard/         Reserved for the MATLAB dashboard
 results/
   figures/         Stage 1 through Stage 4 figures
@@ -172,6 +223,8 @@ run_stage1.m
 run_stage2.m
 run_stage3.m
 run_stage4.m
+run_stage5.m
+run_stage5_demo.m
 ```
 
 ## Development stages
@@ -179,5 +232,6 @@ run_stage4.m
 1. **Complete** — Verify the dataset, summarize data quality, and visualize the inputs and labels.
 2. **Complete** — Prepare data, explore the training split, and document provenance.
 3. **Complete** — Compare classifiers on the frozen validation split and select the Decision Tree.
-4. **Implemented, execution pending** — Refit the locked tree and evaluate it on the publisher test split.
-5. **Pending project-guide approval** — Develop sensor input and prediction interfaces.
+4. **Complete** — Refit the locked tree and evaluate it on the publisher test split.
+5. **Implemented, execution pending** — Predict from manually entered sensor readings.
+6. **Pending project-guide approval** — Develop the interactive dashboard.
