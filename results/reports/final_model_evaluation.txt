@@ -1,0 +1,86 @@
+Stage 4 final held-out model evaluation
+MATLAB 25.2.0.3123386 (R2025b) Update 3
+Statistics and Machine Learning Toolbox 25.2
+Training timestamp (UTC): 2026-11-20 14:05:19
+Twister seed: 42
+Approved Stage 3 revision: bda16ea0bed545c28e3235e3fa3a4b7215b70bf3
+Publisher training: 15628 rows x 6 sensors + one target (5774 Class 0, 9854 Class 1)
+Publisher test: 3907 rows x 6 sensors + one target (1444 Class 0, 2463 Class 1)
+Predictor order: engine_rpm, lub_oil_pressure, fuel_pressure, coolant_pressure, lub_oil_temp, coolant_temp
+Target: engine_condition
+
+Locked model: Decision Tree
+Settings: {"MaxNumSplits":30,"SplitCriterion":"gdi","MinLeafSize":1,"Prior":"empirical"}
+Branch nodes fitted: 13
+The tree and standardization were refitted on all publisher training rows.
+The test split was opened after fitting and used only for scoring.
+Both splits use the training means and sample standard deviations (N-1).
+Zero standard deviations use a divisor of 1. Undefined class metrics are zero.
+The saved model was reloaded and produced identical test predictions.
+
+Feature                            Mean        Sample SD            Scale
+engine_rpm                  792.2617098      267.3429755      267.3429755
+lub_oil_pressure            3.307509123      1.024962115      1.024962115
+fuel_pressure               6.651979614      2.761859971      2.761859971
+coolant_pressure            2.341038831      1.040752586      1.040752586
+lub_oil_temp                77.65033446      3.121914216      3.121914216
+coolant_temp                78.43276164      6.220439634      6.220439634
+
+Final Decision Tree (test)
+Accuracy: 0.659841
+Correct: 2578
+Incorrect: 1329
+Macro precision: 0.626173
+Macro recall: 0.597122
+Macro F1: 0.596498
+Balanced accuracy: 0.597122
+Class     Precision      Recall          F1
+    0      0.562842    0.356648    0.436626
+    1      0.689505    0.837596    0.756370
+Confusion matrix (actual rows, predicted columns, order [0 1]):
+  515   929
+  400  2063
+
+The training-set majority baseline predicts Class 1 on every test row.
+
+Majority baseline (test)
+Accuracy: 0.630407
+Correct: 2463
+Incorrect: 1444
+Macro precision: 0.315203
+Macro recall: 0.500000
+Macro F1: 0.386656
+Balanced accuracy: 0.500000
+Class     Precision      Recall          F1
+    0      0.000000    0.000000    0.000000
+    1      0.630407    1.000000    0.773312
+Confusion matrix (actual rows, predicted columns, order [0 1]):
+    0  1444
+    0  2463
+
+Test Decision Tree vs majority baseline
+Accuracy                              +2.943 percentage points (higher)
+Macro F1                             +20.984 percentage points (higher)
+Balanced accuracy                     +9.712 percentage points (higher)
+Class 0 recall (training minority)   +35.665 percentage points (higher)
+
+Approved Stage 3 validation vs Stage 4 held-out test
+Metric                  Validation         Test
+Accuracy                  0.664427     0.659841
+Macro F1                  0.616311     0.596498
+Balanced accuracy         0.613813     0.597122
+Class 0 recall            0.419913     0.356648
+Class 1 recall            0.807712     0.837596
+Validation scored the development-trained tree on 3126 validation rows.
+Stage 4 scored a separate refit on 3907 publisher test rows. Both fitted models
+and partitions differ, so score changes alone cannot isolate overfitting.
+
+Validation correctly classified 485 of 1155 Class 0 rows and
+predicted Class 1 for the other 670, giving Class 0 recall of 41.99%.
+Test correctly classified 515 of 1444 Class 0 rows and predicted Class 1 for 929.
+Test predicted Class 0 for 400 actual Class 1 rows.
+The lower Class 0 recall seen on validation also appears on the test split.
+
+Class meanings, acquisition process, and publisher split method remain unverified.
+Engine IDs and timestamps are absent. Pressure and temperature units are unverified.
+These results describe this academic benchmark. See docs/dataset_provenance.txt.

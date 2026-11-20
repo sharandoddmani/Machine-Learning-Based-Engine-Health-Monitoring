@@ -36,3 +36,6 @@ secrets.json
 
 # Regenerable Stage 3 figures
 /results/figures/stage3_*.png
+
+# Regenerable Stage 4 figures
+/results/figures/stage4_*.png

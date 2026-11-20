@@ -109,26 +109,61 @@ metrics and setting. It generates `stage3_algorithm_comparison.png`,
 candidates, metadata, validation results, and the preprocessing fit. The
 artifact and figures are regenerated locally.
 
-Validation results guide the choice of model and hyperparameters. They remain
-development estimates. Class meanings, engine-level independence, and
-chronological independence remain unverified. Stage 4 requires project-guide
-approval.
+Validation results guided the approved model and hyperparameter choice.
+
+## Run Stage 4
+
+Stage 4 uses Statistics and Machine Learning Toolbox. From the project
+directory in MATLAB:
+
+```matlab
+run_stage4
+results = runtests('tests');
+assertSuccess(results);
+```
+
+Stage 3 selected a Decision Tree with `MaxNumSplits = 30`, `SplitCriterion =
+'gdi'`, `MinLeafSize = 1`, and empirical priors. Its development-trained
+validation accuracy was 0.664427, macro F1 was 0.616311, and balanced accuracy
+was 0.613813. Class 0 recall was 0.419913 and Class 1 recall was 0.807712.
+
+Stage 4 refits standardization and the locked tree on all 15,628 publisher
+training rows. It then scores the 3,907 held-out test rows. The test split
+contributes no fitted statistics or model choices. Stage 3 validation and
+Stage 4 test evaluate different model fits and partitions.
+
+The majority baseline predicts Class 1, the majority class in `train.csv`.
+From the publisher test counts, its accuracy is 0.630407, macro F1 is 0.386656,
+balanced accuracy is 0.500000, and Class 0 recall is zero. The final tree's
+test metrics and the comparison with this baseline await MATLAB execution.
+
+Stage 4 writes `results/reports/final_model_evaluation.txt` and four PNGs
+under `results/figures/`. They cover the held-out confusion matrix, class
+metrics, validation versus test, and tree versus baseline. The local artifact
+`data/processed/final_engine_model.mat` stores a `bundle` with the compact
+tree (`bundle.model`), full-training standardization (`bundle.preprocessing`),
+predictor order, class labels, locked settings, fit metadata, and final test
+metrics. The run checks that the reloaded bundle produces identical predictions.
+
+The test measures an academic benchmark on the publisher's data. Class meanings,
+engine-level and chronological independence, and acquisition conditions remain
+unverified. Stage 5 requires project-guide approval.
 
 ## Project structure
 
 ```text
 data/
   raw/             Original CSVs (local downloads)
-  processed/       Local Stage 2 data and Stage 3 models
+  processed/       Local prepared data and model artifacts
 src/
   preprocessing/   Schema, splitting, standardization, and EDA
   models/          KNN, Decision Tree, and SVM
-  evaluation/      Validation metrics, ranking, and plots
+  evaluation/      Validation and held-out evaluation
   prediction/      Reserved for inference
 dashboard/         Reserved for the MATLAB dashboard
 results/
-  figures/         Stage 1 through Stage 3 figures
-  reports/         Dataset and feature reports
+  figures/         Stage 1 through Stage 4 figures
+  reports/         Dataset, training, and evaluation reports
 docs/              Project documentation
 tests/             MATLAB preprocessing and model tests
 .gitignore
@@ -136,11 +171,13 @@ README.md
 run_stage1.m
 run_stage2.m
 run_stage3.m
+run_stage4.m
 ```
 
 ## Development stages
 
 1. **Complete** — Verify the dataset, summarize data quality, and visualize the inputs and labels.
 2. **Complete** — Prepare data, explore the training split, and document provenance.
-3. **Implemented, execution pending** — Compare KNN, Decision Tree, and SVM on the frozen validation split.
-4. **Pending project-guide approval** — Evaluate on the held-out test split and develop the prediction dashboard.
+3. **Complete** — Compare classifiers on the frozen validation split and select the Decision Tree.
+4. **Implemented, execution pending** — Refit the locked tree and evaluate it on the publisher test split.
+5. **Pending project-guide approval** — Develop sensor input and prediction interfaces.
