@@ -1,0 +1,32 @@
+# MATLAB autosave, cache, and temporary files
+*.asv
+*.m~
+*.slxc
+slprj/
+*.mex*
+/stage1-matlab*.log
+
+# Editor and OS artifacts
+*~
+*.bak
+*.swp
+*.tmp
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Secrets and local settings
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+secrets.json
+
+# Local datasets and generated model artifacts
+/data/raw/*.csv
+/data/processed/**
+!/data/processed/.gitkeep
+*.mat
+*.onnx

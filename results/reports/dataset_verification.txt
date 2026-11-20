@@ -1,0 +1,70 @@
+Stage 1 dataset verification
+MATLAB 2025b
+Source: https://huggingface.co/datasets/mukherjee78/predictive-maintenance-engine-data
+Documented target: engine_condition (Engine Condition in the source card).
+Assumptions and limits: the source card does not define label meanings, units for all sensors, or split provenance.
+
+Training dataset: 15628 rows x 7 columns
+engine_rpm    lub_oil_pressure    fuel_pressure    coolant_pressure    lub_oil_temp    coolant_temp    engine_condition
+    __________    ________________    _____________    ________________    ____________    ____________    ________________
+
+        496            4.7062            5.2499             3.8034            75.034          70.542              0
+        836              3.96            4.9285             3.7054            74.395          84.098              1
+        623            3.0552            9.4946             2.0847            76.866          72.928              0
+        675            2.7858            5.4639             1.6498            75.397          82.907              1
+       1412             2.816            4.0014             1.9215            83.246          71.177              1
+Input columns: engine_rpm, lub_oil_pressure, fuel_pressure, coolant_pressure, lub_oil_temp, coolant_temp
+  engine_rpm (double): 0 missing, 0 infinite
+  lub_oil_pressure (double): 0 missing, 0 infinite
+  fuel_pressure (double): 0 missing, 0 infinite
+  coolant_pressure (double): 0 missing, 0 infinite
+  lub_oil_temp (double): 0 missing, 0 infinite
+  coolant_temp (double): 0 missing, 0 infinite
+  engine_condition (double): 0 missing, 0 infinite
+    Label 0: 5774 (36.95% of nonmissing labels)
+    Label 1: 9854 (63.05% of nonmissing labels)
+Numerical inputs: engine_rpm, lub_oil_pressure, fuel_pressure, coolant_pressure, lub_oil_temp, coolant_temp
+Categorical inputs: (none)
+Expected sensors present: 6/6. Missing sensors: (none)
+Duplicate rows beyond the first occurrence: 0
+
+Testing dataset: 3907 rows x 7 columns
+engine_rpm    lub_oil_pressure    fuel_pressure    coolant_pressure    lub_oil_temp    coolant_temp    engine_condition
+    __________    ________________    _____________    ________________    ____________    ____________    ________________
+
+       634             2.6113            10.454              2.771            75.864          79.246              1
+       856             4.0438            5.8294             2.4604             73.86          71.047              1
+       814             4.0735            5.2571             1.8666             81.84          76.716              0
+       379             2.7246             4.713             1.9816            77.092          76.107              1
+       868             2.6728            5.2739             1.9054            78.475          72.088              0
+Input columns: engine_rpm, lub_oil_pressure, fuel_pressure, coolant_pressure, lub_oil_temp, coolant_temp
+  engine_rpm (double): 0 missing, 0 infinite
+  lub_oil_pressure (double): 0 missing, 0 infinite
+  fuel_pressure (double): 0 missing, 0 infinite
+  coolant_pressure (double): 0 missing, 0 infinite
+  lub_oil_temp (double): 0 missing, 0 infinite
+  coolant_temp (double): 0 missing, 0 infinite
+  engine_condition (double): 0 missing, 0 infinite
+    Label 0: 1444 (36.96% of nonmissing labels)
+    Label 1: 2463 (63.04% of nonmissing labels)
+Numerical inputs: engine_rpm, lub_oil_pressure, fuel_pressure, coolant_pressure, lub_oil_temp, coolant_temp
+Categorical inputs: (none)
+Expected sensors present: 6/6. Missing sensors: (none)
+Duplicate rows beyond the first occurrence: 0
+
+Matching feature names (order independent): 1
+Training-only features: (none)
+Testing-only features: (none)
+Full records shared: 0 distinct (0 training rows and 0 testing rows).
+Feature-only records shared: 0 distinct (0 training rows and 0 testing rows).
+
+Assessment: suitable for a preliminary supervised classification benchmark.
+Stage 2: confirm label meanings and split provenance, check for engine or time grouping, validate sensor ranges, and fit preprocessing on training data only. Keep the test split held out and use per-class metrics alongside accuracy.
+
+Visualizations
+Saved target_class_distribution.png
+Saved sensor_histograms.png
+Pearson correlation uses 15628 complete training rows.
+Saved feature_correlation.png
+
+Inspection completed.
